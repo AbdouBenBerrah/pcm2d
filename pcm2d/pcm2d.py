@@ -7,6 +7,15 @@
 import numpy as np
 import scipy as sc
 
+def heyney_greenstein(g, s):
+    """This function compute the Heyney-Greenstein scattering function and
+    returns a diffusion direction with respect to the anisotropy factor g 
+    and to a random number"""
+    if g == 0:
+        return s
+    else:
+        return (1 + g * g - ((1 - g * g)/(1 + g * (2 * s - 1)))) / ( 2 * g)
+
 class PcmStorage:
     """A 2D PCM Storage has some properties:
     - a lenght 'length'
@@ -28,14 +37,7 @@ class PcmStorage:
 
 
 
-    def heyney_greenstein(self, g, s):
-        """This function compute the Heyney-Greenstein scattering function and
-        returns a diffusion direction with respect to the anisotropy factor g 
-        and to a random number"""
-        if g == 0:
-            return s
-        else:
-            return (1 + g * g - ((1 - g * g)/(1 + g * (2 * s - 1)))) / ( 2 * g)
+
 
 
     
