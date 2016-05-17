@@ -18,7 +18,7 @@ setup(
     keywords = "PCM",
     url = "http://packages.python.org/an_example_pypi_project",
     packages=['pcm2d', 'tests'],
-    long_description=read('README'),
+    long_description=read('README.md'),
     classifiers=[
         "Development Status :: 1 - Planning",
         "Environment :: X11 Applications",
