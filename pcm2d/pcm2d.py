@@ -42,14 +42,35 @@ class PcmStorage:
     - an absorption coefficient for both solid and liquid phase 'kas' and 'kal'
     - a diffusion coefficient for both solid and liquid phase 'kds' and 'kdl'
     - an anisotropy factor of the Heyney-Greenstein sacattering function for both solad and liquid phase 'gs' and 'gl'
-    - """
+    - a refraction index for both solid and liquid phase 'ns' and 'nl'
+    - a ratio liquid over solid 'ls_r' """
 
-    def __init__(self):
+    def __init__(self, width, length, kas, kal, kds, kdl, gs, gl, ns, nl, ls_r):
         """ inititialisation function for pcm """
+        self.width = width
+        self.length = length
+        self.kas = kas
+        self.kad = kal
+        self.kds = kds
+        self.kdl = kdl
+        self.gs = gs
+        self.gl = gl
+        self.ns = ns
+        self.nl = nl
+        self.ls_r = ls_r
+
+        self.khat = self.setKhat(kas, kds, kal, kdl)
+
+
+
+
+    def setKhat(self, kas, kds, kal, kdl):
+        """ set the null collision coef """
+        
+        return np.maximum(kas + kal,kal + kdl)
+        
+
     
-
-
-
 
 
 
