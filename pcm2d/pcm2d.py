@@ -131,16 +131,22 @@ class PcmStorage:
             self.vect[1] = np.sin(np.arccos(self.vect[0]))
         else:
             self.vect[1] = - np.sin(np.arccos(self.vect[0]))
-        print ("  Dir  :", self.vect, )
         
 
 
     def getRefractionDir(self):
-        
+        print("Refraction")
+        if self.phase == 1:
+            normal = np.array([[-1],[0]])
+            n1 = self.solidProp[3]
+            n2 = self.liquidProp[3]
+        else:
+            normal = np.array([[1],[0]])
+            n1 = self.liquidProp[3]
+            n2 = self.solididProp[3]
 
-
-
-        pass
+        self.vect = opt.snell_descartes(n1, n2, normal, self.vect)
+            
 
     def doPropagation(self):
         out_of_pcm = False
@@ -154,12 +160,14 @@ class PcmStorage:
                 break
             if self.getPhaseChange():
                 self.setPhaseProperties()
-            self.getScatteringDir()
+                self.getRefractionDir()
+            else:
+                self.getScatteringDir()
                 
             #print("phase  :", self.phase)
             self.point_orig = self.point_end
 
-        print("sortie")
+        print("sortie  ", self.point_end)
         
         
         return 0.
