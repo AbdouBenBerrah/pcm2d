@@ -10,7 +10,7 @@ def read(fname):
 
 setup(
     name = "pcm2d",
-    version = "0.0.0",
+    version = "0.0.2",
     author = "Olivier Farges",
     author_email = "olivier@olivier-farges.com",
     description = ("A code that estimates radiative properties of a PCM in 2D"),
