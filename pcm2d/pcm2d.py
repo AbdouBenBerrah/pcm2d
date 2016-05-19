@@ -8,6 +8,8 @@ import numpy as np
 import scipy as sc
 import pcm2d.optical_func as opt
 
+
+
 class PcmStorage:
     """ A 2D PCM Storage has some properties:
     - a lenght 'length'
@@ -23,37 +25,38 @@ class PcmStorage:
         """ inititialisation function for pcm """
         self.width = width
         self.length = length
-        self.kas = kas
-        self.kal = kal
-        self.kds = kds
-        self.kdl = kdl
-        self.gs = gs
-        self.gl = gl
-        self.ns = ns
-        self.nl = nl
+        self.solidProp = np.array([kas, kds, gs, ns])
+        self.liquidProp = np.array([kal, kdl, gl, nl])
+
+
         self.ls_r = ls_r
         self.phase = phase
-
-        
-        
+        self.props = np.zeros(4)
+                
         self.vect = np.array([1., 0.], float)
         self.point_orig = np.array([0, width / 2.],float)
         self.point_end = np.zeros(2)
+        
 
         self.front = self.ls_r * self.length
         self.points = np.array([0, width / 2.],float)
         
         self.khat = self.setKhat()
-        
+
+        self.setPhaseProperties()
         
 
 
 
     def setKhat(self):
         """ set the null collision coef """
-        return np.maximum(self.kas + self.kal, self.kal + self.kdl)
+        return np.maximum(self.solidProp[0] + self.solidProp[1], self.liquidProp[0] + self.liquidProp[1])
 
-
+    def setPhaseProperties(self):
+        if self.phase == 0:
+            self.props = self.solidProp
+        else:
+            self.props = self.liquidProp
 
 
     def getPathLength(self):
@@ -63,8 +66,8 @@ class PcmStorage:
 
     def setRayEnd(self):
         self.point_end = self.point_orig + self.vect * self.pathLength
-        print(self.pathLength)
-        print (self.point_end)
+        #print(self.pathLength)
+        #print (self.point_end)
     
 
     def intersectWithBoundary(self):
@@ -115,13 +118,33 @@ class PcmStorage:
         if changePhase:
             self.pathLength = (self.front - self.point_orig[0]) / self.vect[0]
             self.setRayEnd()
+            return True
 
-    def getInteraction(self):
-        pass
+        return False
+
+
+    
+
+    def getScatteringDir(self):
+        self.vect[0] = opt.heyney_greenstein(self.props[2], np.random.rand())
+        if np.random.rand() < 0.5:
+            self.vect[1] = np.sin(np.arccos(self.vect[0]))
+        else:
+            self.vect[1] = - np.sin(np.arccos(self.vect[0]))
+        print ("  Dir  :", self.vect, )
         
+
+
+    def getRefractionDir(self):
+        
+
+
+
+        pass
 
     def doPropagation(self):
         out_of_pcm = False
+        
         
         while not out_of_pcm:
             self.pathLength = self.getPathLength()
@@ -129,8 +152,11 @@ class PcmStorage:
             out_of_pcm = self.intersectWithBoundary()
             if out_of_pcm:
                 break
-            self.getPhaseChange()
-            print("phase  :", self.phase)
+            if self.getPhaseChange():
+                self.setPhaseProperties()
+            self.getScatteringDir()
+                
+            #print("phase  :", self.phase)
             self.point_orig = self.point_end
 
         print("sortie")
