@@ -5,14 +5,17 @@
 import numpy as np
 import scipy as sc
 
+
+
+
 def heyney_greenstein(g, s):
     """This function compute the Heyney-Greenstein scattering function and
     returns a diffusion direction with respect to the anisotropy factor g 
     and to a random number"""
     if g == 0:
-        return s
+        return 2 * s - 1
     else:
-        return (1 + g**2 - ((1 - g**2)/(1 + g * (2 * s - 1)))) / ( 2 * g)
+        return (1 + g**2 - ((1 - g**2)/(1 + g * (2 * s - 1)))** 2 ) / ( 2 * g)
 
 
 
